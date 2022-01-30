@@ -1,0 +1,6 @@
+# Client-Side Routing for Apache HTTP Server
+
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.html [QSA,L]
