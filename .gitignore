@@ -7,9 +7,13 @@
 
 # testing
 /coverage
+/src2
+/src3
+/src4
 
 # production
 /build
+/.vscode
 
 # misc
 .DS_Store
@@ -21,5 +25,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.vscode/extensions.json
-.vscode/launch.json
