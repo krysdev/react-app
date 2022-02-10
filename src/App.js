@@ -22,11 +22,8 @@ const list = [
 const App = () => (
   <div>
     <h1>Header</h1>
-
     <Search />
-
     <hr />
-
     <List />
   </div>
 );
