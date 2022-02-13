@@ -21,27 +21,32 @@ function App() {
     }
 ]
 
+function HandleSearch(event){
+  console.log(event.target.value);
+}
+
   return (
     <div>
       <h1>Header</h1>
-      <Search />
+      <Search onSearch={HandleSearch}/>
       <hr />
       <List list={stories}/>
     </div>
   );
 }
 
-const Search = () => {
-const [myString, setMyString] = useState('');
+const Search = (props) => {
+const [searchTerm, setSearchTerm] = useState('');
 
-  function HandleChange(event) {
-    setMyString(event.target.value)
-  }
+function HandleChange(event) {
+  setSearchTerm(event.target.value)
+}
 
-  return(
+return(
     <div>
       <label htmlFor="search">Search: </label>
-      <input id="search" type="text" value={myString} onChange={HandleChange}/>
+      <input id="search" type="text" value={searchTerm} onChange={HandleChange}/>
+      <p>TEXT: <strong>{searchTerm}</strong></p>
     </div>
   )
 };
@@ -50,19 +55,23 @@ const List = (props) => {
   return (
     <ul>
       {props.list.map((item) => {
-        return (
-          <li key={item.objectID}>
-            <span>
-              <a href={item.url}>{item.title}</a>
-            </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-          </li>
-        );
+        return <Item passedItem={item} key={item.objectID}/>
       })}
     </ul>
   );
 };
+
+function Item(props){
+  return (
+    <li>
+      <span>
+        <a href={props.passedItem.url}>{props.passedItem.title}</a>
+      </span>
+      <span>{props.passedItem.author}</span>
+      <span>{props.passedItem.num_comments}</span>
+      <span>{props.passedItem.points}</span>
+    </li>
+  );
+}
 
 export default App;
