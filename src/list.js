@@ -3,7 +3,7 @@ const list = [
         {
         title: "React",
         url: "https://reactjs.org/",
-        author: "Jordan Walke",
+        author: "Jordan Walker",
         num_comments: 3,
         points: 4,
         objectID: 0
