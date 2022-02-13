@@ -40,6 +40,7 @@ const [searchTerm, setSearchTerm] = useState('');
 
 function HandleChange(event) {
   setSearchTerm(event.target.value)
+  props.onSearch(event)
 }
 
 return(
