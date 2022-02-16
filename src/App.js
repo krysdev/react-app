@@ -39,35 +39,37 @@ return (
   );
 }
 
-const Search = (props) => {
+const Search = ({onSearch, searchTerm}) => {
 return(
     <div>
       <label htmlFor="search">Search: </label>
-      <input id="search" type="text" value={props.searchTerm} onChange={props.onSearch}/>
-      <p>TEXT: <strong>{props.searchTerm}</strong></p>
+      <input id="search" type="text" value={searchTerm} onChange={onSearch}/>
+      <p>TEXT: <strong>{searchTerm}</strong></p>
     </div>
   )
 };
 
-const List = (props) => {
+const List = ({list}) => {
   return (
     <ul>
-      {props.list.map((item) => {
-        return <Item passedItem={item} key={item.objectID}/>
+      {list.map((item) => {
+        return <Item key={item.objectID} passedItem={item}/>
       })}
     </ul>
   );
 };
 
-function Item(props){
+function Item({
+  passedItem:{url, title, author, num_comments, points}
+}){
   return (
     <li>
       <span>
-        <a href={props.passedItem.url}>{props.passedItem.title}</a>
+        <a href={url}>{title}</a>
       </span>
-      <span>{props.passedItem.author}</span>
-      <span>{props.passedItem.num_comments}</span>
-      <span>{props.passedItem.points}</span>
+      <span>{author}</span>
+      <span>{num_comments}</span>
+      <span>{points}</span>
     </li>
   );
 }
