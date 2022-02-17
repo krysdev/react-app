@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 // import stories from './list';
 
 function App() {
@@ -21,12 +21,19 @@ function App() {
     }
 ]
 
-const [searchTerm, setSearchTerm] = useState('');
+const [searchTerm, setSearchTerm] = useState(
+  localStorage.getItem('search') || 'React'
+);
+
+useEffect(function(){
+  localStorage.setItem('search', searchTerm)
+},[searchTerm]
+)
 
 const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
 function HandleSearch(event){
-  setSearchTerm(event.target.value)  
+  setSearchTerm(event.target.value)
 }
 
 return (
@@ -53,23 +60,21 @@ const List = ({list}) => {
   return (
     <ul>
       {list.map((item) => {
-        return <Item key={item.objectID} passedItem={item}/>
+        return <Item key={item.objectID} item={item}/>
       })}
     </ul>
   );
 };
 
-function Item({
-  passedItem:{url, title, author, num_comments, points}
-}){
+function Item({item}){
   return (
     <li>
       <span>
-        <a href={url}>{title}</a>
+        <a href={item.url}>{item.title}</a>
       </span>
-      <span>{author}</span>
-      <span>{num_comments}</span>
-      <span>{points}</span>
+      <span>{item.author}</span>
+      <span>{item.num_comments}</span>
+      <span>{item.points}</span>
     </li>
   );
 }
