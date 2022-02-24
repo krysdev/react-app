@@ -19,25 +19,25 @@ function App() {
     points: 5,
     objectID: 1
     }
-]
+  ]
 
-const [searchTerm, setSearchTerm] = useState(
-  localStorage.getItem('search') || 'React'
-);
+  const [searchTerm, setSearchTerm] = useState(
+    localStorage.getItem('search') ?? 'React'
+  );
 
-useEffect(function(){
-  localStorage.setItem('search', searchTerm)
-},[searchTerm]
-)
+  useEffect(function(){
+    localStorage.setItem('search', searchTerm)
+  },[searchTerm]
+  )
 
-const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
+  const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
-function HandleSearch(event){
-  setSearchTerm(event.target.value)
-}
+  function HandleSearch(event){
+    setSearchTerm(event.target.value)
+  }
 
-return (
-  <div>
+  return (
+    <div>
       <h1>Header</h1>
       <Search onSearch={HandleSearch} searchTerm={searchTerm}/>
       <hr />
@@ -47,7 +47,7 @@ return (
 }
 
 const Search = ({onSearch, searchTerm}) => {
-return(
+  return(
     <div>
       <label htmlFor="search">Search: </label>
       <input id="search" type="text" value={searchTerm} onChange={onSearch}/>
