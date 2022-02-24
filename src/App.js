@@ -26,8 +26,8 @@ function App() {
   );
 
   useEffect(function(){
-    localStorage.setItem('search', searchTerm)
-  },[searchTerm]
+      localStorage.setItem('search', searchTerm)
+    },[searchTerm]
   )
 
   const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
