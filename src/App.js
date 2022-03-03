@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 
 
 function useSemiPersistentState(key, initialState) {
+
   const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);
    
   useEffect(function(){
@@ -34,29 +35,29 @@ function App() {
 
   const [searchTerm, setSearchTerm] =  useSemiPersistentState('search', 'React')
   
-  function HandleSearch(event){
+  function handleSearch(event){
     setSearchTerm(event.target.value)
   }
-  
+
   const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <div>
       <h1>Header</h1>
-      <Search onSearch={HandleSearch} searchTerm={searchTerm}/>
+      <InputFieldWIthLabel id="search" label="Search" value={searchTerm} onInputChange={handleSearch}/>
       <hr />
       <List list={searchedStories}/>
     </div>
   );
 }
 
-const Search = ({onSearch, searchTerm}) => {
+const InputFieldWIthLabel = ({id, label, type='text', value, onInputChange}) => {
   return(
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" value={searchTerm} onChange={onSearch}/>
-      <p>TEXT: <strong>{searchTerm}</strong></p>
-    </div>
+    <>
+      <label htmlFor={id}>{label}: </label>&nbsp;
+      <input id={id} type={type} value={value} onChange={onInputChange}/>
+      <p>TEXT==&gt; <strong>{value}</strong></p>
+    </>
   )
 };
 
