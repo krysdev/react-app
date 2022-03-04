@@ -44,17 +44,24 @@ function App() {
   return (
     <div>
       <h1>Header</h1>
-      <InputFieldWIthLabel id="search" label="Search" value={searchTerm} onInputChange={handleSearch}/>
+      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearch}>
+        <TEST/>
+        SEARCH:
+      </InputFieldWIthLabel>
       <hr />
       <List list={searchedStories}/>
     </div>
   );
 }
 
-const InputFieldWIthLabel = ({id, label, type='text', value, onInputChange}) => {
+function TEST() {
+  return 'TeXXXXt--'
+}
+
+const InputFieldWIthLabel = ({id, value, type='text', onInputChange, children}) => {
   return(
     <>
-      <label htmlFor={id}>{label}: </label>&nbsp;
+      <label htmlFor={id}>{children} </label>
       <input id={id} type={type} value={value} onChange={onInputChange}/>
       <p>TEXT==&gt; <strong>{value}</strong></p>
     </>
