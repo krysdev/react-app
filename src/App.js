@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 // import stories from './list';
 
 
@@ -44,7 +44,7 @@ function App() {
   return (
     <div>
       <h1>Header</h1>
-      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearch}>
+      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearch} isFocused>
         <TEST/>
         SEARCH:
       </InputFieldWIthLabel>
@@ -54,15 +54,24 @@ function App() {
   );
 }
 
-function TEST() {
-  return 'TeXXXXt--'
-}
+const TEST = () =>'TeXXXXt---'
 
-const InputFieldWIthLabel = ({id, value, type='text', onInputChange, children}) => {
+const InputFieldWIthLabel = ({id, value, type='text', onInputChange, isFocused, children}) => {
+
+  const inputRef = useRef()
+  
+  useEffect(
+    () => {
+      if(isFocused && inputRef.current){
+        inputRef.current.focus()
+      }
+    }, [isFocused]
+  )
+
   return(
     <>
       <label htmlFor={id}>{children} </label>
-      <input id={id} type={type} value={value} onChange={onInputChange}/>
+      <input ref = {inputRef} id={id} type={type} value={value} onChange={onInputChange} />
       <p>TEXT==&gt; <strong>{value}</strong></p>
     </>
   )
