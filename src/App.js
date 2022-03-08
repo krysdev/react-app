@@ -1,6 +1,25 @@
-import React, {useState, useEffect, useRef} from 'react';
-// import stories from './list';
 
+import React, {useState, useEffect, useRef} from 'react';
+import initialStories from './list';   // default export name: list
+
+// const stories = [
+//   {
+//   title: "React",
+//   url: "https://reactjs.org/",
+//   author: "Jordan Walker",
+//   num_comments: 3,
+//   points: 4,
+//   objectID: 0
+//   },
+//   {
+//   title: "Redux",
+//   url: "https://redux.js.org/",
+//   author: "Dan Abramov, Andrew Clark",
+//   num_comments: 2,
+//   points: 5,
+//   objectID: 1
+//   }
+// ]
 
 function useSemiPersistentState(key, initialState) {
 
@@ -13,28 +32,18 @@ function useSemiPersistentState(key, initialState) {
   return [value, setValue]
 }
 
-function App() {
-  const stories = [
-    {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Walker",
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-    },
-    {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-    }
-  ]
+const App = ()=> {
 
   const [searchTerm, setSearchTerm] =  useSemiPersistentState('search', 'React')
-  
+  const [stories, setStories] = useState(initialStories)
+
+  function handleRemoveStory(item) {
+    const newStories = stories.filter(
+      (story) => item.objectID !== story.objectID
+    )
+    setStories(newStories)
+  }
+
   function handleSearch(event){
     setSearchTerm(event.target.value)
   }
@@ -49,7 +58,7 @@ function App() {
         SEARCH:
       </InputFieldWIthLabel>
       <hr />
-      <List list={searchedStories}/>
+      <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
     </div>
   );
 }
@@ -77,17 +86,24 @@ const InputFieldWIthLabel = ({id, value, type='text', onInputChange, isFocused, 
   )
 };
 
-const List = ({list}) => {
+
+const List = ({list, onRemoveItem}) => {
   return (
     <ul>
       {list.map((item) => {
-        return <Item key={item.objectID} item={item}/>
+        return <Item key={item.objectID} item={item} onRemoveItemPassed={onRemoveItem}/>
       })}
     </ul>
   );
 };
 
-function Item({item}){
+
+const Item = ({item, onRemoveItemPassed}) => {
+
+  // const handleRemoveItem = () =>{
+  //   onRemoveItemPassed(item)
+  // }
+
   return (
     <li>
       <span>
@@ -96,6 +112,11 @@ function Item({item}){
       <span>{item.author}</span>
       <span>{item.num_comments}</span>
       <span>{item.points}</span>
+      <span>
+        <button type='button' onClick={() => onRemoveItemPassed(item)}>
+          Dismiss
+        </button>
+      </span>
     </li>
   );
 }
