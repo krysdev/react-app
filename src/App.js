@@ -38,9 +38,7 @@ const App = ()=> {
   const [stories, setStories] = useState(initialStories)
 
   function handleRemoveStory(item) {
-    const newStories = stories.filter(
-      (story) => item.objectID !== story.objectID
-    )
+    const newStories = stories.filter((story) => item.objectID !== story.objectID)
     setStories(newStories)
   }
 
