@@ -27,10 +27,18 @@ const App = ()=> {
 
   const [searchTerm, setSearchTerm] =  useSemiPersistentState('search', 'React')
   const [stories, setStories] = useState([])
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
+  
   useEffect(() => {
+    setIsLoading(true)
+
     getAsyncStories()
-    .then(result => {setStories(result.data.stories)})
+    .then(result => {
+      setStories(result.data.stories)
+      setIsLoading(false)
+    })
+    .catch(() => setIsError(true))
   }, [])
   
   function handleRemoveStory(item) {
@@ -52,12 +60,16 @@ const App = ()=> {
         SEARCH:
       </InputFieldWIthLabel>
       <hr />
-      <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
+      {isError && <p>We have an error</p>}
+      {isLoading
+       ? <><TEST/><p>The content is loading...</p></>
+       : <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
+      }
     </div>
   );
 }
 
-const TEST = () =>'TeXXXXt---'
+const TEST = () =>'TeSSt---'
 
 const InputFieldWIthLabel = ({id, value, type='text', onInputChange, isFocused, children}) => {
 
