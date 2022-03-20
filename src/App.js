@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useReducer} from 'react';
 import initialStories from './list';   // default export name: list
 
 
@@ -17,33 +17,60 @@ function useSemiPersistentState(key, initialState) {
 const getAsyncStories = () =>
   new Promise(resolve =>
     setTimeout(
-      () => resolve({ data: { stories: initialStories } }),
-      500
+      () => resolve({ data: { storiesdata: initialStories } }),
+      300
     )
 )
+
+const storiesReducer = (state, action) => { 
+  console.log(action);
+  switch (action.type){
+    case 'SET_STORIES':
+      return action.payload
+    case 'REMOVE_STORIES':
+      return state.filter((story) => action.payload.objectID !== story.objectID)
+    default:
+      throw new Error()
+  }
+}
 
 
 const App = ()=> {
 
   const [searchTerm, setSearchTerm] =  useSemiPersistentState('search', 'React')
-  const [stories, setStories] = useState([])
+//const [stories, setStories] = useState([]) //OLD
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   
+  const [stories, dispatchStories] = useReducer(storiesReducer, [])
+/* [CURRENT_STATE, STATE_UPDATER_FUNC] = useReducer(REDUCER_FUNCTION, INTIAL_STATE)  --> the state_updater_function is the dispatch_function */
+
+
   useEffect(() => {
     setIsLoading(true)
 
     getAsyncStories()
     .then(result => {
-      setStories(result.data.stories)
+    //setStories(result.data.stories) //OLD
+      dispatchStories({
+        type: 'SET_STORIES',
+        payload: result.data.storiesdata
+      })
       setIsLoading(false)
     })
     .catch(() => setIsError(true))
+  
   }, [])
   
+
   function handleRemoveStory(item) {
-    const newStories = stories.filter((story) => item.objectID !== story.objectID)
-    setStories(newStories)
+  //const newStories = stories.filter((story) => item.objectID !== story.objectID)
+  //setStories(newStories) //OLD
+    dispatchStories({
+      type: 'REMOVE_STORIES',
+      payload: item
+  //  payload: newStories
+    })
   }
 
   function handleSearch(event){
@@ -119,7 +146,7 @@ const Item = ({item, onRemoveItemPassed}) => {
       <span>{item.num_comments}</span>
       <span>{item.points}</span>
       <span>
-        <button type='button' onClick={() => onRemoveItemPassed(item)}>
+        <button type='button' onClick={() => onRemoveItemPassed(item)}>     {/*   onClick={handleRemoveItem}   */}
           Dismiss
         </button>
       </span>
