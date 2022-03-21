@@ -5,7 +5,7 @@ import initialStories from './list';   // default export name: list
 
 function useSemiPersistentState(key, initialState) {
 
-  const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);
+  const [value, setValue] = useState(localStorage.getItem(key) ?? initialState)  //   || replaced by ?? (nullish coalescing operator - p.70)
    
   useEffect(function(){
     localStorage.setItem(key, value)
@@ -25,9 +25,9 @@ const getAsyncStories = () =>
 const storiesReducer = (state, action) => { 
   switch (action.type){
     case 'SET_STORIES':
-      return action.payload
+      return action.payload        // a new state is the 'storiesdata' from 'getAsyncStories'
     case 'REMOVE_STORIES':
-      return state.filter((story) => action.payload.objectID !== story.objectID)
+      return state.filter((story) => action.payload.objectID !== story.objectID)   // a new state is created out of the filtered state
     default:
       throw new Error()
   }
@@ -41,8 +41,10 @@ const App = ()=> {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   
-  const [stories, dispatchStories] = useReducer(storiesReducer, [])
-/* [CURRENT_STATE, STATE_UPDATER_FUNC] = useReducer(REDUCER_FUNCTION, INTIAL_STATE)  --> the state_updater_function is the dispatch_function */
+  const [stories, dispatchStories] = useReducer(storiesReducer, [])    // 'storiesReducer' creates a new state
+/* [CURRENT_STATE, STATE_UPDATER_FUNC] = useReducer(REDUCER_FUNCTION, INTIAL_STATE)
+   the state_updater_function is the dispatch_function - it dispatches an action (type and payload) for the 'storiesReducer' (p.101)
+*/
 
 
   useEffect(() => {
