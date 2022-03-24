@@ -25,9 +25,9 @@ const getAsyncStories = () =>
 const storiesReducer = (state, action) => { 
   switch (action.type){
     case 'SET_STORIES':
-      return action.payload        // a new state is the 'storiesdata' from 'getAsyncStories'
+      return action.payload
     case 'REMOVE_STORIES':
-      return state.filter((story) => action.payload.objectID !== story.objectID)   // a new state is created out of the filtered state
+      return state.filter((story) => action.payload.objectID !== story.objectID)
     default:
       throw new Error()
   }
@@ -37,22 +37,16 @@ const storiesReducer = (state, action) => {
 const App = ()=> {
 
   const [searchTerm, setSearchTerm] =  useSemiPersistentState('search', 'React')
-//const [stories, setStories] = useState([]) //OLD
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   
-  const [stories, dispatchStories] = useReducer(storiesReducer, [])    // 'storiesReducer' creates a new state
-/* [CURRENT_STATE, STATE_UPDATER_FUNC] = useReducer(REDUCER_FUNCTION, INTIAL_STATE)
-   the state_updater_function is the dispatch_function - it dispatches an action (type and payload) for the 'storiesReducer' (p.101)
-*/
-
+  const [stories, dispatchStories] = useReducer(storiesReducer, [])
 
   useEffect(() => {
     setIsLoading(true)
 
     getAsyncStories()
     .then(result => {
-    //setStories(result.data.stories) //OLD
       dispatchStories({
         type: 'SET_STORIES',
         payload: result.data.storiesdata
@@ -65,12 +59,9 @@ const App = ()=> {
   
 
   function handleRemoveStory(item) {
-  //const newStories = stories.filter((story) => item.objectID !== story.objectID)
-  //setStories(newStories) //OLD
     dispatchStories({
       type: 'REMOVE_STORIES',
       payload: item
-  //  payload: newStories
     })
   }
 
