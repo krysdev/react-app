@@ -1,6 +1,6 @@
 
 import React, {useState, useEffect, useRef, useReducer} from 'react';
-import initialStories from './list';   // default export name: list
+//import initialStories from './list';   // default export name: list
 
 
 function useSemiPersistentState(key, initialState) {
@@ -14,13 +14,13 @@ function useSemiPersistentState(key, initialState) {
   return [value, setValue]
 }
 
-const getAsyncStories = () =>
-  new Promise(resolve =>
-    setTimeout(
-      () => resolve({ data: { stories_fetched: initialStories } }),
-      300
-    )
-)
+// const getAsyncStories = () =>
+//   new Promise(resolve =>
+//     setTimeout(
+//       () => resolve({ data: { stories_fetched: initialStories } }),
+//       300
+//     )
+// )
 
 /* REJECTION TESTING: */
 // const getAsyncStories = () =>
@@ -54,6 +54,7 @@ const storiesReducer = (state, action) => {
   }
 }
 
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query='
 
 const App = ()=> {
 
@@ -61,16 +62,20 @@ const App = ()=> {
   const [stories, dispatchStories] = useReducer(storiesReducer, {data: [], isLoading: false, isError: false})  //   const searchedStories = stories.DATA.filter 
 
   useEffect(() => {
+    
+    if (!searchTerm) return
+
     dispatchStories({
       type: 'STORIES_FETCH_INIT',
     })
 
-    getAsyncStories()
-    .then(result => {
-      /* result     ->    {data:{stories_fetched: initialStories}}   /* line 20  */
+    fetch(`${API_ENDPOINT}${searchTerm}`)
+    .then (response => response.json())
+    .then (result => {
+      /* result     ->    {data:{stories_fetched: initialStories}}   */
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
-        payload: result.data.stories_fetched
+        payload: result.hits
       })
     })
     .catch(() =>
@@ -78,7 +83,7 @@ const App = ()=> {
       type: 'STORIES_FETCH_FAILURE',
     }))
   
-  }, [])
+  }, [searchTerm])
   
 
   function handleRemoveStory(item) {
@@ -92,7 +97,7 @@ const App = ()=> {
     setSearchTerm(event.target.value)
   }
 
-  const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
+  // const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <div>
@@ -105,7 +110,7 @@ const App = ()=> {
       {stories.isError && <p>We have an error</p>}
       {stories.isLoading
        ? <><TEST/><p>The content is loading...</p></>
-       : <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
+       : <List list={stories.data} onRemoveItem={handleRemoveStory}/>
       }
     </div>
   );
