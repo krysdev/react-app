@@ -48,7 +48,10 @@ const storiesReducer = (state, action) => {
           isError: true
         }
     case 'REMOVE_STORY':
-      return state.data.filter((story) => action.payload.objectID !== story.objectID)
+      return {
+        ...state,
+        data: state.data.filter((story) => action.payload.objectID !== story.objectID)
+      }
     default:
       throw new Error()
   }
@@ -60,15 +63,17 @@ const App = ()=> {
 
   const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
   const [stories, dispatchStories] = useReducer(storiesReducer, {data: [], isLoading: false, isError: false})  //   const searchedStories = stories.DATA.filter 
+  const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
+
 
   const handleFetchStories = useCallback(() => {
-    if (!searchTerm) return
+    // if (!searchTerm) return
 
     dispatchStories({
       type: 'STORIES_FETCH_INIT',
     })
 
-    fetch(`${API_ENDPOINT}${searchTerm}`)
+    fetch(url)
     .then (response => response.json())
     .then (result => {
         /*           result     ->    {data:{stories_fetched: initialStories}}   */
@@ -82,7 +87,7 @@ const App = ()=> {
       type: 'STORIES_FETCH_FAILURE',
       })
     )
-  }, [searchTerm])
+  }, [url])
 
 
   useEffect(() => {
@@ -97,19 +102,26 @@ const App = ()=> {
     })
   }
 
-  function handleSearch(event){
+  function handleSearchInput(event){
     setSearchTerm(event.target.value)
   }
 
   // const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
+  function handleSearchSubmit() {
+    setUrl(`${API_ENDPOINT}${searchTerm}`)
+  }
+
   return (
     <div>
       <h1>Header</h1>
-      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearch} isFocused>
+      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearchInput} isFocused>   {/* isFocused=true */}
         <TEST/>
         SEARCH:
       </InputFieldWIthLabel>
+      <button type='button'disabled={!searchTerm} onClick={handleSearchSubmit}>
+        Submit
+      </button>
       <hr />
       {stories.isError && <p>We have an error</p>}
       {stories.isLoading
@@ -170,7 +182,7 @@ const Item = ({item, onRemoveItemPassed}) => {
       <span>{item.num_comments}</span>
       <span>{item.points}</span>
       <span>
-        <button type='button' onClick={() => onRemoveItemPassed(item)}>     {/*   onClick={handleRemoveItem}   */}
+        <button type='button' onClick={() => onRemoveItemPassed(item)} >     {/*   onClick={handleRemoveItem}   */}
           Dismiss
         </button>
       </span>
