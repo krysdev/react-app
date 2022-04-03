@@ -1,6 +1,6 @@
 
-import React, {useState, useEffect, useRef, useReducer} from 'react';
-//import initialStories from './list';   // default export name: list
+import React, {useState, useEffect, useRef, useReducer, useCallback} from 'react'
+// import initialStories from './list'   // default export name: list
 
 
 function useSemiPersistentState(key, initialState) {
@@ -26,7 +26,7 @@ function useSemiPersistentState(key, initialState) {
 // const getAsyncStories = () =>
 // new Promise((resolve, reject) => setTimeout(reject, 2000));
 
-const storiesReducer = (state, action) => { 
+const storiesReducer = (state, action) => {
   switch (action.type){
     case 'STORIES_FETCH_INIT':
       return {
@@ -48,7 +48,7 @@ const storiesReducer = (state, action) => {
           isError: true
         }
     case 'REMOVE_STORY':
-      return state.filter((story) => action.payload.objectID !== story.objectID)
+      return state.data.filter((story) => action.payload.objectID !== story.objectID)
     default:
       throw new Error()
   }
@@ -61,8 +61,7 @@ const App = ()=> {
   const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
   const [stories, dispatchStories] = useReducer(storiesReducer, {data: [], isLoading: false, isError: false})  //   const searchedStories = stories.DATA.filter 
 
-  useEffect(() => {
-    
+  const handleFetchStories = useCallback(() => {
     if (!searchTerm) return
 
     dispatchStories({
@@ -72,7 +71,7 @@ const App = ()=> {
     fetch(`${API_ENDPOINT}${searchTerm}`)
     .then (response => response.json())
     .then (result => {
-      /* result     ->    {data:{stories_fetched: initialStories}}   */
+        /*           result     ->    {data:{stories_fetched: initialStories}}   */
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
         payload: result.hits
@@ -81,10 +80,15 @@ const App = ()=> {
     .catch(() =>
       dispatchStories({
       type: 'STORIES_FETCH_FAILURE',
-    }))
-  
+      })
+    )
   }, [searchTerm])
-  
+
+
+  useEffect(() => {
+    handleFetchStories()
+  }, [handleFetchStories])
+
 
   function handleRemoveStory(item) {
     dispatchStories({
@@ -109,11 +113,11 @@ const App = ()=> {
       <hr />
       {stories.isError && <p>We have an error</p>}
       {stories.isLoading
-       ? <><TEST/><p>The content is loading...</p></>
+       ? <>The content is loading...</>
        : <List list={stories.data} onRemoveItem={handleRemoveStory}/>
       }
     </div>
-  );
+  )
 }
 
 const TEST = () =>'TeSSt---'
