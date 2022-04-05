@@ -1,5 +1,6 @@
 
 import React, {useState, useEffect, useRef, useReducer, useCallback} from 'react'
+import axios from 'axios'
 // import initialStories from './list'   // default export name: list
 
 
@@ -73,13 +74,12 @@ const App = ()=> {
       type: 'STORIES_FETCH_INIT',
     })
 
-    fetch(url)
-    .then (response => response.json())
+    axios.get(url)
+    // .then (response => response.json())
     .then (result => {
-        /*           result     ->    {data:{stories_fetched: initialStories}}   */
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
-        payload: result.hits
+        payload: result.data.hits
       })
     })
     .catch(() =>
