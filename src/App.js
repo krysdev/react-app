@@ -68,7 +68,6 @@ const App = ()=> {
 
 
   const handleFetchStories = useCallback(async () => {
-    // if (!searchTerm) return
 
     dispatchStories({
       type: 'STORIES_FETCH_INIT',
@@ -105,20 +104,17 @@ const App = ()=> {
 
   // const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
-  function handleSearchSubmit() {
+  function handleSearchSubmit(event) {
     setUrl(`${API_ENDPOINT}${searchTerm}`)
+    event.preventDefault()
   }
 
   return (
     <div>
       <h1>Header</h1>
-      <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={handleSearchInput} isFocused>   {/* isFocused=true */}
-        <TEST/>
-        SEARCH:
-      </InputFieldWIthLabel>
-      <button type='button'disabled={!searchTerm} onClick={handleSearchSubmit}>
-        Submit
-      </button>
+      
+      <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit} />
+
       <hr />
       {stories.isError && <p>We have an error</p>}
       {stories.isLoading
@@ -128,6 +124,19 @@ const App = ()=> {
     </div>
   )
 }
+
+const SearchForm = ({searchTerm, onSearchSubmit, onSearchInput}) => (
+  <form onSubmit={onSearchSubmit}>
+    <InputFieldWIthLabel id="search" value={searchTerm} onInputChange={onSearchInput} isFocused>   {/* isFocused=true */}
+      <TEST/>
+      SEARCH:
+    </InputFieldWIthLabel>
+    <button type='submit' disabled={!searchTerm}>
+      Submit
+    </button>
+  </form>
+)
+
 
 const TEST = () =>'TeSSt---'
 
