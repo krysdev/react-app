@@ -1,7 +1,23 @@
 
 import React, {useState, useEffect, useRef, useReducer, useCallback} from 'react'
 import axios from 'axios'
+import styled from 'styled-components'
 // import initialStories from './list'   // default export name: list
+
+const StyledDiv = styled.div`
+// height: 100vw;
+padding: 20px;
+background: #83a4d4;
+background: linear-gradient(to left, #b6fbff, #83a4d4);
+color: #171212;
+`
+
+const StyledH1 = styled.h1`
+font-size: 48px;
+font-weight: 300;
+letter-spacing: 2px;
+`
+
 
 
 function useSemiPersistentState(key, initialState) {
@@ -110,8 +126,8 @@ const App = ()=> {
   }
 
   return (
-    <div>
-      <h1>Header</h1>
+    <StyledDiv>
+      <StyledH1>Header</StyledH1>
       
       <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit} />
 
@@ -121,7 +137,7 @@ const App = ()=> {
        ? <>The content is loading...</>
        : <List list={stories.data} onRemoveItem={handleRemoveStory}/>
       }
-    </div>
+    </StyledDiv>
   )
 }
 
