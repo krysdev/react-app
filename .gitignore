@@ -17,6 +17,8 @@
 /.vscode
 
 # misc
+package.json
+webpack.config.js
 .DS_Store
 .env.local
 .env.development.local
